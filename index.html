@@ -1,781 +1,623 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MXU · BOOT · ADVANCED · EXPLORER · LIVE</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚙️ RESPO‑SCHALTUNG · 756 ACHSEN · ZAHNRAD‑METHODE</title>
 
-<style>
-:root {
-    --fg: #0ff;
-    --bg: #000;
-    --step1: #f44;
-    --step2: #ff4;
-    --step3: #4f4;
-    --step4: #4ff;
-    --step5: #44f;
-    --step6: #f4f;
-    --gold: #ffd700;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Consolas', monospace;
-    padding: 12px;
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 10px;
-}
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-header {
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-header h1 {
-    font-size: 18px;
-    color: var(--gold);
-    text-shadow: 0 0 20px var(--gold);
-    letter-spacing: 2px;
-}
-header h1 .boot { color: var(--step1); }
-header h1 .adv { color: var(--step3); }
-#clock { font-size: 12px; color: #666; }
+    body {
+      background: radial-gradient(ellipse at 20% 30%, #1a1a24, #000000);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Consolas', monospace;
+      padding: 12px;
+      color: #c0d0d0;
+    }
 
-main {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 10px;
-    height: 100%;
-    min-height: 400px;
-}
+    .container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(12, 12, 20, 0.5);
+      backdrop-filter: blur(2px);
+      border-radius: 32px;
+      padding: 20px 24px 30px;
+      border: 1px solid rgba(180, 200, 220, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(200, 220, 240, 0.02);
+    }
 
-#sequence {
-    background: #0a0a12;
-    border: 1px solid #1a1a2a;
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-.step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: #0e0e1a;
-    border-left: 3px solid #222;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-.step .num {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #1a1a2a;
-    color: #666;
-    font-size: 10px;
-    font-weight: bold;
-    flex-shrink: 0;
-    transition: all 0.3s;
-}
-.step .name { font-weight: bold; font-size: 13px; flex: 1; }
-.step .status { font-size: 10px; color: #444; transition: all 0.3s; }
-.step .indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #222;
-    transition: all 0.3s;
-    flex-shrink: 0;
-}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(180, 200, 220, 0.06);
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
 
-.step.active { border-left-color: var(--fg); background: #0f1a1a; }
-.step.active .num { background: var(--fg); color: #000; }
-.step.active .indicator { background: var(--fg); box-shadow: 0 0 12px var(--fg); }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 300;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, #e0e8f0, #b0c8d8, #8098b0, #c0d8e8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header h1 small {
+      font-size: 12px;
+      letter-spacing: 3px;
+      -webkit-text-fill-color: #4a5a6a;
+      color: #4a5a6a;
+    }
 
-.step.done { border-left-color: #4f4; opacity: 0.7; }
-.step.done .num { background: #4f4; color: #000; }
-.step.done .indicator { background: #4f4; }
+    .status-badge {
+      display: flex;
+      gap: 18px;
+      font-size: 11px;
+      color: #5a7a8a;
+      letter-spacing: 1px;
+    }
+    .status-badge span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2a4a5a;
+      transition: 0.3s;
+    }
+    .dot.on {
+      background: #8cf0d0;
+      box-shadow: 0 0 12px #8cf0d0;
+    }
+    .dot.pulse {
+      background: #f0d080;
+      animation: pulse 1.2s infinite;
+    }
+    .dot.connected {
+      background: #70c8ff;
+      box-shadow: 0 0 16px #70c8ff;
+    }
 
-.step.error { border-left-color: #f44; background: #1a0a0a; }
-.step.error .num { background: #f44; color: #000; }
-.step.error .indicator { background: #f44; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
 
-#status-panel {
-    background: #0a0a12;
-    border: 1px solid #1a1a2a;
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-#status-panel h3 { font-size: 11px; color: #666; border-bottom: 1px solid #1a1a2a; padding-bottom: 6px; }
-#live-log {
-    flex: 1;
-    overflow-y: auto;
-    font-size: 10px;
-    color: #6a6a8a;
-    line-height: 1.5;
-    min-height: 150px;
-    max-height: 300px;
-}
-#live-log .entry { padding: 2px 0; border-bottom: 1px solid #0a0a12; }
-#live-log .entry .time { color: #444; }
-#live-log .entry .msg { color: #8af; }
-#live-log .entry .msg.ok { color: #4f4; }
-#live-log .entry .msg.err { color: #f44; }
-#live-log .entry .msg.warn { color: #ff4; }
+    .grid-wrap {
+      position: relative;
+      margin: 10px 0 18px;
+      border-radius: 20px;
+      background: rgba(6, 8, 14, 0.6);
+      padding: 12px;
+      border: 1px solid rgba(120, 160, 190, 0.04);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
+    }
 
-#controls {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 6px;
-}
-button {
-    background: #111;
-    color: var(--fg);
-    border: 1px solid #333;
-    padding: 6px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
-    transition: all 0.2s;
-}
-button:hover { background: #1a1a2a; border-color: var(--gold); }
-button:active { transform: scale(0.95); }
-button.primary { border-color: var(--gold); background: var(--gold); color: #000; }
-button.primary:hover { background: #6cf; border-color: #6cf; }
-button.danger { border-color: #f44; color: #f44; }
-button.danger:hover { background: #f44; color: #000; }
-button.success { border-color: #4f4; color: #4f4; }
-button.success:hover { background: #4f4; color: #000; }
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(27, 1fr);
+      grid-template-rows: repeat(28, 1fr);
+      gap: 2px;
+      aspect-ratio: 27 / 28;
+      width: 100%;
+      max-height: 70vh;
+    }
 
-#geo-container {
-    grid-column: 1 / -1;
-    background: #0a0a12;
-    border: 1px solid #1a1a2a;
-    border-radius: 10px;
-    padding: 12px;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-}
-#geo-container pre {
-    font-size: 11px;
-    color: #4a6a6a;
-    text-align: center;
-    line-height: 1.3;
-    white-space: pre;
-}
-#geo-values {
-    font-size: 10px;
-    color: #6a6a8a;
-    line-height: 1.6;
-}
-#geo-values .label { color: #444; }
-#geo-values .value { color: var(--gold); }
+    .cell {
+      background: rgba(24, 32, 40, 0.25);
+      border-radius: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10px;
+      color: #8a9aaa;
+      transition: all 0.25s cubic-bezier(0.15, 0.8, 0.3, 1.2);
+      cursor: pointer;
+      text-shadow: 0 0 6px rgba(160, 200, 240, 0.1);
+      border: 1px solid rgba(100, 140, 170, 0.03);
+      backdrop-filter: blur(1px);
+      will-change: transform, background, box-shadow;
+      word-break: break-all;
+      text-align: center;
+      line-height: 1.1;
+      overflow: hidden;
+    }
 
-#config-panel {
-    grid-column: 1 / -1;
-    background: #0a0a12;
-    border: 1px solid #1a1a2a;
-    border-radius: 10px;
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 10px;
-    color: #666;
-}
-#config-panel .row { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; }
-#config-panel .item { display: flex; gap: 4px; align-items: center; }
-#config-panel .item .label { color: #444; }
-#config-panel .item .value { color: var(--gold); }
-#config-panel h4 { color: #666; font-size: 10px; }
-#config-panel input[type="text"], #config-panel input[type="number"] {
-    background: #111;
-    border: 1px solid #333;
-    color: var(--fg);
-    font-family: inherit;
-    font-size: 10px;
-    padding: 3px 6px;
-    border-radius: 4px;
-    width: 70px;
-}
-#config-panel input[type="text"] { width: 110px; }
+    .cell:hover {
+      z-index: 10;
+      border-color: rgba(200, 230, 255, 0.15);
+    }
 
-#farbe16-row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.swatch {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    border: 1px solid #333;
-    cursor: pointer;
-    transition: transform 0.15s;
-}
-.swatch:hover { transform: scale(1.2); border-color: var(--gold); }
-.swatch.selected { border-color: var(--gold); box-shadow: 0 0 6px var(--gold); }
-#tmp16-value { color: var(--gold); font-family: monospace; }
+    .cell.active {
+      background: radial-gradient(circle at 30% 30%, #d8e8f0, #a0b8c8);
+      color: #0a1218;
+      border-color: #b0d0e0;
+      box-shadow: 0 0 20px rgba(180, 220, 255, 0.3), inset 0 -4px 8px rgba(0,0,0,0.2);
+      transform: scale(1.05);
+      font-weight: bold;
+    }
 
-@media (max-width: 800px) {
-    main { grid-template-columns: 1fr; }
-    #geo-container { min-height: 60px; }
-}
-</style>
+    .cell.connected {
+      background: rgba(100, 200, 255, 0.3);
+      border-color: #70c8ff;
+      box-shadow: 0 0 20px rgba(100, 200, 255, 0.2);
+    }
+
+    .cell.wave {
+      animation: waveGlow 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes waveGlow {
+      0% { box-shadow: 0 0 4px rgba(160, 200, 240, 0.1); background: rgba(24, 32, 40, 0.2); }
+      100% { box-shadow: 0 0 24px rgba(180, 220, 255, 0.25); background: rgba(60, 80, 100, 0.3); }
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      margin: 8px 0 6px;
+      padding: 6px 4px;
+      border-top: 1px solid rgba(100, 140, 170, 0.04);
+    }
+
+    .controls button {
+      background: rgba(20, 28, 36, 0.5);
+      border: 1px solid rgba(120, 160, 190, 0.08);
+      color: #9ab0c0;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-family: inherit;
+      letter-spacing: 1.2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .controls button:hover {
+      background: rgba(40, 70, 90, 0.3);
+      border-color: rgba(160, 200, 240, 0.2);
+      color: #d0e8f8;
+      transform: translateY(-1px);
+    }
+    .controls button.primary {
+      border-color: rgba(180, 220, 255, 0.15);
+      color: #c0dce8;
+    }
+    .controls button.primary:hover {
+      background: rgba(60, 120, 160, 0.2);
+      border-color: #80c0e0;
+      box-shadow: 0 0 20px rgba(80, 180, 240, 0.05);
+    }
+    .controls button.ds9 {
+      border-color: rgba(255, 215, 0, 0.1);
+      color: #e8d080;
+    }
+    .controls button.ds9:hover {
+      background: rgba(255, 215, 0, 0.05);
+      border-color: #f0d080;
+    }
+    .controls button.danger {
+      border-color: rgba(255, 80, 80, 0.08);
+      color: #d06060;
+    }
+    .controls button.danger:hover {
+      background: rgba(255, 80, 80, 0.04);
+    }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #4a6a7a;
+      padding: 4px 0;
+      border-top: 1px solid rgba(100, 140, 170, 0.03);
+      margin-top: 4px;
+    }
+    .info-row .val { color: #aac8d8; font-weight: 400; }
+    .info-row .highlight { color: #e8d080; }
+
+    .log {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 14px;
+      padding: 6px 14px;
+      font-size: 10px;
+      color: #4a6a7a;
+      max-height: 50px;
+      overflow-y: auto;
+      border: 1px solid rgba(100, 140, 170, 0.02);
+      margin-top: 8px;
+      font-family: 'Consolas', monospace;
+      line-height: 1.6;
+    }
+    .log .ok { color: #80d0b0; }
+    .log .flow { color: #d0b080; }
+    .log .whirl { color: #c080d0; }
+    .log .ds9 { color: #e8d080; }
+    .log .achse { color: #70c8ff; }
+    .log .6d { color: #80d0b0; }
+    .log .connect { color: #70c8ff; }
+
+    .footer {
+      text-align: center;
+      margin-top: 12px;
+      color: #1a2a30;
+      font-size: 9px;
+      letter-spacing: 3px;
+    }
+    .footer .gold { color: #e8d080; }
+    .footer .silver { color: #b0c8d8; }
+
+    @media (max-width: 700px) {
+      .container { padding: 12px; }
+      .header h1 { font-size: 18px; letter-spacing: 3px; }
+      .cell { font-size: 6px; }
+      .controls button { font-size: 10px; padding: 4px 12px; }
+      .status-badge { font-size: 9px; gap: 10px; }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    <div>
-        <h1><span class="boot">⚡ MXU</span> · <span class="adv">BOOT</span> · ADVANCED · EXPLORER</h1>
+<div class="container">
+
+  <div class="header">
+    <h1>⚙️ RESPO‑SCHALTUNG <small>756 ACHSEN · ZAHNRAD‑METHODE</small></h1>
+    <div class="status-badge">
+      <span><span class="dot on" id="dotSchaltung"></span> SCHALTUNG</span>
+      <span><span class="dot" id="dotVerbindung"></span> VERBINDUNG</span>
+      <span><span class="dot pulse" id="dotAchse"></span> 756</span>
     </div>
-    <div>
-        <span id="clock">⏱️ --:--:--</span>
-        <span style="margin-left:12px;color:#666;" id="cycle-count">Zyklus 0</span>
-    </div>
-</header>
+  </div>
 
-<main>
-    <div id="sequence">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <span style="color:#666;font-size:11px;">▶ BOOT-SEQUENZ</span>
-            <span id="progress-text" style="font-size:10px;color:#444;">0/10</span>
-        </div>
+  <div class="grid-wrap">
+    <div id="grid"></div>
+  </div>
 
-        <div class="step" data-step="0">
-            <span class="num">1</span>
-            <span class="name">DOOR</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="1">
-            <span class="num">2</span>
-            <span class="name">DOO</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="2">
-            <span class="num">3</span>
-            <span class="name">RESPO</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="3">
-            <span class="num">4</span>
-            <span class="name">OS</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="4">
-            <span class="num">5</span>
-            <span class="name">NC.engine</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="5">
-            <span class="num">6</span>
-            <span class="name">243</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="6">
-            <span class="num">7</span>
-            <span class="name">SCORE</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="7">
-            <span class="num">8</span>
-            <span class="name">WETTE</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="8">
-            <span class="num">9</span>
-            <span class="name">SLIDE</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
-        <div class="step" data-step="9">
-            <span class="num">10</span>
-            <span class="name">⚡ Axiom</span>
-            <span class="status">⏳ wartet</span>
-            <span class="indicator"></span>
-        </div>
+  <div class="controls">
+    <button class="primary" id="btnVerbinden">🔗 VERBINDEN</button>
+    <button class="primary" id="btnZurueck">↩️ ZURÜCK</button>
+    <button class="ds9" id="btnDs9">★ DS9</button>
+    <button id="btnReset">⟲ RESET</button>
+  </div>
 
-        <div id="controls">
-            <button class="primary" id="btn-boot">▶ BOOT</button>
-            <button id="btn-step">⏭ STEP</button>
-            <button class="danger" id="btn-reset">⟲ RESET</button>
-            <button class="success" id="btn-auto">▶ AUTO</button>
-        </div>
-    </div>
+  <div class="info-row">
+    <span>DATEIEN: <span class="val" id="fileCount">0</span></span>
+    <span>AKTIV: <span class="val" id="activeCount">0</span></span>
+    <span>VERBUNDEN: <span class="val" id="connectedCount">0</span></span>
+    <span class="highlight">⚡ <span id="comboDisplay">ZAHNRAD</span></span>
+  </div>
 
-    <div id="status-panel">
-        <h3>📊 SYSTEM-STATUS</h3>
-        <div id="live-log">
-            <div class="entry"><span class="time">[INIT]</span> <span class="msg ok">⚡ MXU · BOOT · ADVANCED · EXPLORER</span></div>
-            <div class="entry"><span class="time">[INIT]</span> <span class="msg">📦 10 Module — warte auf BOOT</span></div>
-        </div>
-        <div style="display:flex;gap:10px;font-size:10px;color:#666;border-top:1px solid #1a1a2a;padding-top:6px;">
-            <span>🔴 <span id="status-led" style="color:#f44;">●</span> idle</span>
-            <span>📦 <span id="module-count">0</span>/10 aktiv</span>
-        </div>
-    </div>
-</main>
+  <div class="log" id="log">
+    [⚙️] Respo‑Schaltung initialisiert · alle Dateien als Zellen
+  </div>
 
-<div id="geo-container">
-    <pre id="geo-display">
-   ▲
-  / \
- /   \
-/_____\
-    </pre>
-    <div id="geo-values"></div>
+  <div class="footer">
+    <span class="gold">★</span> JEDE ZELLE = EINE DATEI · <span class="silver">Zahnrad‑Mechanik aktiv</span>
+  </div>
 </div>
-
-<div id="config-panel">
-    <div class="row">
-        <span class="item"><span class="label">📂 System:</span> <span class="value">MXU · BOOT</span></span>
-        <span class="item"><span class="label">🔄 Status:</span> <span class="value" id="status-value">BEREIT</span></span>
-        <span class="item"><span class="label">⚡ Modus:</span> <span class="value" id="mode-value">IDLE</span></span>
-    </div>
-
-    <div class="row">
-        <h4>🖥️ REAL_INPUT (aus realwert.md) — trag deine echten Werte ein:</h4>
-    </div>
-    <div class="row">
-        <span class="item"><span class="label">Name:</span> <input type="text" id="in-name" placeholder="optional"></span>
-        <span class="item"><span class="label">Jahr:</span> <input type="number" id="in-jahr" value="0"></span>
-        <span class="item"><span class="label">RAM:</span> <input type="number" id="in-ram" value="0"></span>
-        <span class="item"><span class="label">GPU:</span> <input type="number" id="in-gpu" value="0"></span>
-        <span class="item"><span class="label">CPU:</span> <input type="number" id="in-cpu" value="0"></span>
-        <span class="item"><span class="label">ROM:</span> <input type="number" id="in-rom" value="0"></span>
-    </div>
-    <div class="row">
-        <span class="label" style="margin-right:4px;">🎨 farbe16 (klicken statt tippen → tmp16):</span>
-        <div id="farbe16-row"></div>
-        <span>tmp16: <span id="tmp16-value">–</span></span>
-    </div>
-</div>
-
-<!-- echte Werte aus deinen Dateien BOOT.geo und realwert.md -->
-<script src="./boot-geo.js"></script>
-<script src="./real-input.js"></script>
 
 <script>
-// ============================================================
-// 1. KONFIGURATION — INTERNE MODULE (keine Imports)
-// ============================================================
+  // ==============================================================
+  //  RESPO‑SCHALTUNG · 756 ACHSEN · ZAHNRAD‑METHODE
+  //  Jede Zelle repräsentiert eine Datei aus dem Repository.
+  //  Klick aktiviert die Zelle und verbindet sie mit allen anderen
+  //  Zellen, die denselben Namenspräfix haben.
+  // ==============================================================
 
-// --- MODULE-DEFINITIONEN ---
-const MODULES = [
-    { id: 'DOOR',     fn: 'doorOpen',     label: 'Tür öffnen' },
-    { id: 'DOO',      fn: 'dooRun',       label: 'Domain starten' },
-    { id: 'RESPO',    fn: 'respoCheck',   label: 'RESPO prüfen' },
-    { id: 'OS',       fn: 'osStart',      label: 'OS booten' },
-    { id: 'NC.engine',fn: 'ncStart',      label: 'NC-Engine starten' },
-    { id: '243',      fn: 'two43Start',   label: '243-System aktivieren' },
-    { id: 'SCORE',    fn: 'scoreEval',    label: 'SCORE bewerten' },
-    { id: 'WETTE',    fn: 'wettePredict', label: 'WETTE prognostizieren' },
-    { id: 'SLIDE',    fn: 'slideOptimize',label: 'SLIDE optimieren' },
-    { id: 'AXIOM',    fn: 'axiomActivate',label: '⚡ AXIOM aktivieren' }
-];
+  // ─── DATEILISTE AUS FILES.TXT (manuell übernommen) ──────────
+  const fileList = [
+    "3.rom", "3hit90.js", "3×1.js", "3×3.js", "9×9.js",
+    "CODEOWNERS.md", "CONTRIBUTING.md", "ID.json", "README.md",
+    "anker.js", "api.js", "arbeit.js", "atom.raw.js", "build.js",
+    "cache.js", "cache.raw.js", "call.js", "clock.js", "corridoor.js",
+    "cpu.js", "cpu.raw.js", "echo.zahn.js", "energie.raw.js",
+    "flanke.js", "geo.js", "gleichung.js", "gpu.js", "gpu.raw.js",
+    "hall.rad.js", "mac.js", "mass.js", "pipe.js", "pipe.pipeline.js",
+    "rad.js", "raid.pipeline.js", "ram.js", "ram.raw.js", "recall.js",
+    "respo360.js", "respoDashboard.js", "rom.js", "rom.raw.js",
+    "run.over", "schuss.js", "scsi.raid", "stage.js", "stage.pipeline.js",
+    "status.json", "time.js", "use.js", "user.js", "verfahren.js",
+    "work.js", "zahn.js", "ziel.js",
+    "81", "6.raw", "64.raw", "64‑Matrix", "64‑Matrix.raw", "6d.raw",
+    "6e.raw", "6s.raw", "81.raw", "81.rom", "A81‑Axis.js",
+    "BEST‑KERN.html", "BEST‑STATIONEN.html", "ID.html", "M‑Axis.js",
+    "README.md", "TMP‑Namen.raw", "T‑Axis.js", "UaW", "WaU.html",
+    "a81.raw", "engine.js", "f.raw", "index.html", "m.raw", "m64.raw",
+    "o.raw", "score.html", "stationen.html", "sys.raw", "t9.raw",
+    "tem.raw", "tmp.raw", "u.raw",
+    "9", "3hit90.js", "3×1.js", "3×3.js", "9.rom", "9×9.js",
+    "CODEOWNERS.md", "CONTRIBUTING.md", "ID.json", "README.md",
+    "anker.js", "api.js", "arbeit.js", "atom.raw.js", "build.js",
+    "cache.js", "cache.raw.js", "call.js", "clock.js", "corridoor.js",
+    "cpu.js", "cpu.raw.js", "echo.zahn.js", "energie.raw.js",
+    "flanke.js", "geo.js", "gleichung.js", "gpu.js", "gpu.raw.js",
+    "hall.rad.js", "mac.js", "mass.js", "pipe.js", "pipe.pipeline.js",
+    "rad.js", "raid.pipeline.js", "ram.js", "ram.raw.js", "recall.js",
+    "respo360.js", "respoDashboard.js", "rom.js", "rom.raw.js",
+    "run.over", "schuss.js", "scsi.raid", "stage.js", "stage.pipeline.js",
+    "status.json", "time.js", "use.js", "user.js", "verfahren.js",
+    "work.js", "zahn.js", "ziel.js",
+    "AURA", "use.user", "user.use", "MANA", "use.user", "user.use",
+    "ZEN", "use.user", "user.use", "use",
+    "243", "27.js", "3.js", "81.js", "81.room", "9.js", "9hoch9.json",
+    "ID.html", "LICENSE-CLOSED.txt", "NC.math", "OUR.js",
+    "PRE9×9.math", "README.md", "ULTRA‑NC3×3.room",
+    "ULTRA‑NC9×9.room", "X.room.CORE", "X.room.IN", "X.room.OUT",
+    "api.js", "axes.js", "cube9.js", "cxr.orbit.js", "fusion9.js",
+    "ghost.html", "ghost.js", "index.html", "lage.js",
+    "navigator9.js", "pipeline12.master.js", "respo_bridge.js",
+    "rith.engine.js", "schnitt.js", "sli.ready", "tmp.js",
+    "ultra.kernel.js", "user.use", "user",
+    "3hoch3.js", "3hoch3.room", "3o3.js", "4u.html", "ID.html",
+    "README.md", "corridoor.transwarp.nc.js", "index.html", "pos.js",
+    "schnitt.js", "use,user",
+    "HOLO.engine.js", "HOLO.room.js", "NC.room.js",
+    "RAWATOR.geo.json", "RAWATOR.id.json", "RESPO.room.js",
+    "SYS.js", "atom.js", "axiom.js", "beam.js", "beam.json",
+    "core.js", "geo.md", "index.html", "molecule.js",
+    "M.room.js", "chess.role.js", "matrix.js", "VEC128", "VEC128.js",
+    "VECTO8", "matrix81.js", "VECTOR", "vector.js",
+    "12ALL.master.js", "BETA.js", "ECO.js", "GAMMA.js", "HTML.js",
+    "INDEX.hyperraum.js", "INDEX.portal.js", "INDEX.respo.js",
+    "INDEX.warb.js", "MEGA_INDEX.js", "MEGA_INDEX.zoom.js",
+    "RUN360.js", "RUN8.js", "live.js",
+    "AUTO.POS", "AUTO.run", "AUTO.sys", "SLAVE.sys",
+    "VECTOR_MEASURE", "VECTOR_index", "VECTOR_index.list.index.allrespo",
+    "VECTOR_list", "VECTOR_run", "auto.list", "master.sys", "vector.sys",
+    "ID.html", "README.md", "a.list", "index.html"
+  ];
 
-// --- MODUL-FUNKTIONEN ---
-// Jede Funktion liest jetzt echte Werte aus BOOT_GEO bzw. REAL_INPUT,
-// statt fixer Fantasie-Texte.
-const MODULE_FNS = {
-    doorOpen: () => {
-        geoMove(BOOT_GEO.dir);
-        return {
-            status: 'open',
-            message: 'Tür geöffnet · Zone ' + BOOT_GEO.zone + ' · Pos [' + BOOT_GEO.pos.join(',') + '] · Richtung ' + BOOT_GEO.dir
-        };
-    },
-    dooRun: () => {
-        return { status: 'running', message: 'DOO läuft · Bewegung: ' + BOOT_GEO.mov };
-    },
-    respoCheck: () => {
-        return { status: 'ok', message: 'RESPO: 3-9-27-81 · geo.val = ' + BOOT_GEO.val };
-    },
-    osStart: () => {
-        const hw = 'RAM ' + REAL_INPUT.ram + ' · CPU ' + REAL_INPUT.cpu + ' · GPU ' + REAL_INPUT.gpu + ' · ROM ' + REAL_INPUT.rom;
-        return { status: 'active', message: 'OS gestartet · Hardware: ' + hw };
-    },
-    ncStart: () => {
-        return { status: 'active', message: 'NC.engine: 243 Neuronen · CPU-Last: ' + REAL_INPUT.cpu };
-    },
-    two43Start: () => {
-        const pumpSequenz = [3, 9, 27, 81];
-        return { status: 'active', message: '243-System aktiv · Pump-Sequenz: ' + pumpSequenz.join(' → ') };
-    },
-    scoreEval: () => {
-        const sum = REAL_INPUT.ram + REAL_INPUT.gpu + REAL_INPUT.cpu + REAL_INPUT.rom;
-        const score = sum > 0 ? Math.min(1, sum / (sum + 100)) : 0;
-        return { status: 'ok', message: 'SCORE: ' + score.toFixed(2) + ' (aus RAM/GPU/CPU/ROM)' };
-    },
-    wettePredict: () => {
-        const jahr = REAL_INPUT.jahr || '–';
-        return { status: 'ok', message: 'WETTE: Prognose für Baujahr ' + jahr };
-    },
-    slideOptimize: () => {
-        return { status: 'ok', message: 'SLIDE optimiert · Raster: ' + REAL_INPUT.raster.small + ' / ' + REAL_INPUT.raster.medium };
-    },
-    axiomActivate: () => {
-        const wer = REAL_INPUT.name ? REAL_INPUT.name : 'System';
-        return { status: 'active', message: '⚡ AXIOM aktiviert — ' + wer + ' treu · Zone ' + BOOT_GEO.zone + ' · val=' + BOOT_GEO.val };
-    }
-};
+  // ─── GRID ────────────────────────────────────────────────────
+  const gridEl = document.getElementById('grid');
+  const cells = [];
+  const COLS = 27;
+  const ROWS = 28;
+  const TOTAL = COLS * ROWS;
 
-// ============================================================
-// 2. DOM-REFERENZEN
-// ============================================================
-const steps = document.querySelectorAll('.step');
-const logDiv = document.getElementById('live-log');
-const statusLed = document.getElementById('status-led');
-const moduleCount = document.getElementById('module-count');
-const progressText = document.getElementById('progress-text');
-const cycleCountEl = document.getElementById('cycle-count');
-const geoDisplay = document.getElementById('geo-display');
-const geoValues = document.getElementById('geo-values');
-const statusValue = document.getElementById('status-value');
-const modeValue = document.getElementById('mode-value');
+  // State
+  let activeIndex = -1;
+  let connectedIndices = [];
+  let ds9Mode = false;
+  let comboCount = 0;
 
-const btnBoot = document.getElementById('btn-boot');
-const btnStep = document.getElementById('btn-step');
-const btnReset = document.getElementById('btn-reset');
-const btnAuto = document.getElementById('btn-auto');
+  // Funktion: Präfix extrahieren (erste Ziffern oder erste Buchstaben)
+  function getPrefix(name) {
+    const match = name.match(/^([0-9]+|[A-Za-z]+)/);
+    return match ? match[1] : name.substring(0, 1);
+  }
 
-// ============================================================
-// 3. STATE
-// ============================================================
-let currentStep = -1;
-let isRunning = false;
-let autoMode = false;
-let autoTimer = null;
-let cycleCount = 0;
-let stepTimeouts = [];
-let bootResults = [];
+  // ─── ZELLEN AUFBAUEN ────────────────────────────────────────
+  for (let i = 0; i < TOTAL; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    // Dateiname zuweisen, falls vorhanden, sonst Platzhalter
+    const fileName = i < fileList.length ? fileList[i] : '·';
+    cell.textContent = fileName;
+    cell.dataset.index = i;
+    cell.dataset.file = fileName;
+    cell.dataset.prefix = getPrefix(fileName);
 
-// ============================================================
-// 4. GEO-ASCII-ANIMATION + ECHTE GEO-WERTE ANZEIGEN
-// ============================================================
-const GEO_FRAMES = [
-    '   ▲\n  / \\\n /   \\\n/_____\\',
-    '   ▲\n  /o\\\n /   \\\n/_____\\',
-    '   ▲\n  /o\\\n / o \\\n/_____\\',
-    '   ▲\n  /o\\\n / o \\\n/__o__\\',
-    '   ▲\n  /o\\\n / o \\\n/__o__\\\n  ●',
-    '   ○\n  / \\\n /   \\\n/_____\\'
-];
-let geoIndex = 0;
+    cell.addEventListener('click', () => handleCellClick(i));
 
-function animateGeo() {
-    geoIndex = (geoIndex + 1) % GEO_FRAMES.length;
-    geoDisplay.textContent = GEO_FRAMES[geoIndex];
-}
-setInterval(animateGeo, 800);
+    gridEl.appendChild(cell);
+    cells.push(cell);
+  }
 
-function renderGeoValues() {
-    geoValues.innerHTML =
-        '<div><span class="label">zone:</span> <span class="value">' + BOOT_GEO.zone + '</span></div>' +
-        '<div><span class="label">pos:</span> <span class="value">[' + BOOT_GEO.pos.join(',') + ']</span></div>' +
-        '<div><span class="label">dir:</span> <span class="value">' + BOOT_GEO.dir + '</span></div>' +
-        '<div><span class="label">val:</span> <span class="value">' + BOOT_GEO.val + '</span></div>' +
-        '<div><span class="label">mov:</span> <span class="value">' + BOOT_GEO.mov + '</span></div>';
-}
+  // ─── KLICK-HANDLER ──────────────────────────────────────────
+  function handleCellClick(index) {
+    const cell = cells[index];
+    const fileName = cell.dataset.file;
+    const prefix = cell.dataset.prefix;
 
-// ============================================================
-// 5. LOG
-// ============================================================
-function log(msg, type) {
-    type = type || 'info';
-    const entry = document.createElement('div');
-    entry.className = 'entry';
-    const time = new Date().toLocaleTimeString();
-    const cls = type === 'ok' ? 'ok' : type === 'err' ? 'err' : type === 'warn' ? 'warn' : '';
-    entry.innerHTML = '<span class="time">[' + time + ']</span> <span class="msg ' + cls + '">' + msg + '</span>';
-    logDiv.appendChild(entry);
-    logDiv.scrollTop = logDiv.scrollHeight;
-    while (logDiv.children.length > 100) logDiv.removeChild(logDiv.firstChild);
-}
-
-// ============================================================
-// 6. STEP-FUNKTIONEN
-// ============================================================
-function resetAll() {
-    isRunning = false;
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-    autoMode = false;
-    btnAuto.textContent = '▶ AUTO';
-    stepTimeouts.forEach(function(t) { clearTimeout(t); });
-    stepTimeouts = [];
-    currentStep = -1;
-    bootResults = [];
-    cycleCount = 0;
-    cycleCountEl.textContent = 'Zyklus 0';
-    statusValue.textContent = 'RESET';
-    modeValue.textContent = 'IDLE';
-
-    BOOT_GEO.zone = 'BOOT';
-    BOOT_GEO.pos = [0, 0, 0];
-    BOOT_GEO.dir = 'N';
-    BOOT_GEO.val = 0;
-    BOOT_GEO.mov = 'none';
-    renderGeoValues();
-
-    steps.forEach(function(step) {
-        step.className = 'step';
-        const statusEl = step.querySelector('.status');
-        statusEl.textContent = '⏳ wartet';
-    });
-
-    updateProgress();
-    updateModuleCount();
-    statusLed.textContent = '●';
-    statusLed.style.color = '#f44';
-    log('⟲ RESET — Alle Module + BOOT.geo zurückgesetzt', 'warn');
-}
-
-function updateProgress() {
-    const done = document.querySelectorAll('.step.done').length;
-    progressText.textContent = done + '/' + steps.length;
-}
-
-function updateModuleCount() {
-    const active = document.querySelectorAll('.step.done, .step.active').length;
-    moduleCount.textContent = active;
-}
-
-function executeStep(index) {
-    if (index >= MODULES.length) {
-        log('✅ ALLE MODULE AUSGEFÜHRT — System bereit!', 'ok');
-        statusLed.textContent = '●';
-        statusLed.style.color = '#4f4';
-        statusValue.textContent = 'BEREIT';
-        modeValue.textContent = 'SYSTEM OK';
-        isRunning = false;
-
-        if (autoMode) {
-            cycleCount++;
-            cycleCountEl.textContent = 'Zyklus ' + cycleCount;
-            log('🔄 Zyklus ' + cycleCount + ' startet...', 'warn');
-            setTimeout(function() {
-                resetAll();
-                setTimeout(function() { executeStep(0); }, 300);
-            }, 3000);
-        }
-        return;
-    }
-
-    const step = steps[index];
-    const module = MODULES[index];
-
-    step.className = 'step active';
-    const statusEl = step.querySelector('.status');
-    statusEl.textContent = '⏳ läuft...';
-    isRunning = true;
-    statusValue.textContent = 'BOOT ' + (index+1) + '/' + MODULES.length;
-    modeValue.textContent = 'RUNNING';
-
-    log('▶ ' + module.id + ' — ' + module.label, 'info');
-
-    const duration = 400 + Math.random() * 600;
-    const timeout = setTimeout(function() {
-        const success = Math.random() > 0.1;
-        if (success) {
-            step.className = 'step done';
-            statusEl.textContent = '✅ erledigt';
-            const result = MODULE_FNS[module.fn] ? MODULE_FNS[module.fn]() : { status: 'ok', message: 'erledigt' };
-            log('✅ ' + module.id + ' — ' + (result.message || 'erfolgreich'), 'ok');
-
-            renderGeoValues();
-
-            if (module.id === 'AXIOM') {
-                geoDisplay.textContent = '   ★\n  / \\\n /   \\\n/_____\\\n  ●  ●';
-                statusLed.textContent = '●';
-                statusLed.style.color = '#ffd700';
-            }
-
-            updateProgress();
-            updateModuleCount();
-            currentStep = index;
-            stepTimeouts.push(setTimeout(function() { executeStep(index + 1); }, 200 + Math.random() * 300));
-        } else {
-            step.className = 'step error';
-            statusEl.textContent = '❌ Fehler';
-            log('❌ ' + module.id + ' — FEHLER!', 'err');
-            statusLed.textContent = '●';
-            statusLed.style.color = '#f44';
-            statusValue.textContent = 'FEHLER';
-            modeValue.textContent = 'ERROR';
-            isRunning = false;
-            log('⛔ Boot abgebrochen — bitte RESET', 'err');
-        }
-        updateModuleCount();
-    }, duration);
-    stepTimeouts.push(timeout);
-}
-
-function boot() {
-    if (isRunning) { log('⚠️ System läuft bereits', 'warn'); return; }
-    const hasDone = document.querySelectorAll('.step.done').length > 0;
-    if (hasDone) { resetAll(); setTimeout(function() { boot(); }, 300); return; }
-
-    log('🚀 BOOT-SEQUENZ gestartet', 'warn');
-    statusLed.textContent = '●';
-    statusLed.style.color = '#ff4';
-    statusValue.textContent = 'BOOTING';
-    modeValue.textContent = 'START';
-    currentStep = -1;
-    bootResults = [];
-    executeStep(0);
-}
-
-function stepManual() {
-    if (isRunning) { log('⚠️ System läuft bereits', 'warn'); return; }
-    const nextIndex = currentStep + 1;
-    if (nextIndex >= MODULES.length) { log('✅ Alle Module bereits ausgeführt', 'ok'); return; }
-    if (currentStep >= 0) { executeStep(nextIndex); }
-    else { boot(); }
-}
-
-function toggleAuto() {
-    autoMode = !autoMode;
-    btnAuto.textContent = autoMode ? '⏸ PAUSE' : '▶ AUTO';
-    if (autoMode) {
-        log('▶ AUTO-Modus gestartet', 'warn');
-        if (!isRunning && currentStep < MODULES.length - 1) {
-            resetAll();
-            setTimeout(function() { boot(); }, 500);
-        }
+    // Zelle aktivieren (toggle)
+    if (activeIndex === index) {
+      // bereits aktiv -> deaktivieren
+      deactivateCell(index);
+      activeIndex = -1;
+      log(`⛔ ${fileName} deaktiviert`, 'flow');
     } else {
-        log('⏸ AUTO-Modus pausiert', 'warn');
-        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      // vorherige deaktivieren
+      if (activeIndex >= 0) deactivateCell(activeIndex);
+      // neue aktivieren
+      activateCell(index);
+      activeIndex = index;
+      log(`🔧 ${fileName} aktiviert (Präfix: ${prefix})`, 'connect');
+
+      // Verbindung zu allen Zellen mit gleichem Präfix herstellen
+      connectWithPrefix(prefix, index);
     }
-}
+    updateStats();
+  }
 
-// ============================================================
-// 7. REAL_INPUT — Eingabefelder live mit dem Objekt verbinden
-// ============================================================
-function bindRealInput() {
-    const nameEl = document.getElementById('in-name');
-    const jahrEl = document.getElementById('in-jahr');
-    const ramEl = document.getElementById('in-ram');
-    const gpuEl = document.getElementById('in-gpu');
-    const cpuEl = document.getElementById('in-cpu');
-    const romEl = document.getElementById('in-rom');
+  function activateCell(index) {
+    const cell = cells[index];
+    cell.classList.add('active');
+    cell.style.transform = 'scale(1.1)';
+    // Sound-Effekt (simuliert)
+    playTone(600 + Math.random() * 200, 0.08);
+  }
 
-    nameEl.value = REAL_INPUT.name;
-    jahrEl.value = REAL_INPUT.jahr;
-    ramEl.value = REAL_INPUT.ram;
-    gpuEl.value = REAL_INPUT.gpu;
-    cpuEl.value = REAL_INPUT.cpu;
-    romEl.value = REAL_INPUT.rom;
+  function deactivateCell(index) {
+    const cell = cells[index];
+    cell.classList.remove('active');
+    cell.style.transform = '';
+  }
 
-    nameEl.addEventListener('input', function() { REAL_INPUT.name = nameEl.value; });
-    jahrEl.addEventListener('input', function() { REAL_INPUT.jahr = Number(jahrEl.value) || 0; });
-    ramEl.addEventListener('input', function() { REAL_INPUT.ram = Number(ramEl.value) || 0; });
-    gpuEl.addEventListener('input', function() { REAL_INPUT.gpu = Number(gpuEl.value) || 0; });
-    cpuEl.addEventListener('input', function() { REAL_INPUT.cpu = Number(cpuEl.value) || 0; });
-    romEl.addEventListener('input', function() { REAL_INPUT.rom = Number(romEl.value) || 0; });
-}
+  function connectWithPrefix(prefix, excludeIndex) {
+    // Alle bestehenden Verbindungen zurücksetzen
+    clearConnections();
 
-// ─── farbe16-Palette rendern (Klicken statt Tippen → tmp16) ────
-function renderFarbe16() {
-    const row = document.getElementById('farbe16-row');
-    const tmp16El = document.getElementById('tmp16-value');
-    row.innerHTML = '';
-    REAL_INPUT.farbe16.forEach(function(hex) {
-        const sw = document.createElement('div');
-        sw.className = 'swatch';
-        sw.style.background = '#' + hex;
-        sw.title = '#' + hex;
-        sw.addEventListener('click', function() {
-            REAL_INPUT.tmp16 = hex;
-            document.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('selected'); });
-            sw.classList.add('selected');
-            tmp16El.textContent = '#' + hex;
-            log('🎨 tmp16 gesetzt: #' + hex, 'info');
-        });
-        row.appendChild(sw);
+    let count = 0;
+    cells.forEach((cell, idx) => {
+      if (idx === excludeIndex) return;
+      if (cell.dataset.prefix === prefix) {
+        cell.classList.add('connected');
+        connectedIndices.push(idx);
+        count++;
+      }
     });
-}
 
-// ============================================================
-// 8. TASTATUR
-// ============================================================
-document.addEventListener('keydown', function(e) {
-    if (e.target.tagName === 'INPUT') return;
-    if (e.key === 'b' || e.key === 'B') btnBoot.click();
-    if (e.key === 's' || e.key === 'S') btnStep.click();
-    if (e.key === 'r' || e.key === 'R') btnReset.click();
-    if (e.key === 'a' || e.key === 'A') btnAuto.click();
-    if (e.key === ' ') { e.preventDefault(); toggleAuto(); }
-});
+    if (count > 0) {
+      log(`🔗 ${count} Verbindungen zu Präfix "${prefix}" hergestellt`, 'connect');
+      document.getElementById('dotVerbindung').className = 'dot connected';
+      // Combo zählt
+      comboCount++;
+      if (comboCount >= 3) {
+        log(`⚡ COMBO! ${comboCount} Verbindungen in Folge`, 'whirl');
+        comboCount = 0;
+      }
+      // DS9-Effekt bei aktiver Verbindung
+      if (ds9Mode) {
+        cells.forEach(c => {
+          if (c.classList.contains('connected')) {
+            c.style.boxShadow = '0 0 30px rgba(255,215,0,0.6)';
+          }
+        });
+      }
+    } else {
+      log(`⚠️ Keine weiteren Dateien mit Präfix "${prefix}"`, 'flow');
+    }
+    updateStats();
+  }
 
-// ============================================================
-// 9. BUTTON-BINDING
-// ============================================================
-btnBoot.addEventListener('click', boot);
-btnStep.addEventListener('click', stepManual);
-btnReset.addEventListener('click', resetAll);
-btnAuto.addEventListener('click', toggleAuto);
+  function clearConnections() {
+    connectedIndices.forEach(idx => {
+      cells[idx].classList.remove('connected');
+      cells[idx].style.boxShadow = '';
+    });
+    connectedIndices = [];
+    document.getElementById('dotVerbindung').className = 'dot';
+  }
 
-// ============================================================
-// 10. UHR
-// ============================================================
-function updateClock() {
-    document.getElementById('clock').textContent = '⏱️ ' + new Date().toLocaleTimeString();
-}
-setInterval(updateClock, 1000);
-updateClock();
+  // ─── BUTTONS ──────────────────────────────────────────────────
+  document.getElementById('btnVerbinden').addEventListener('click', () => {
+    if (activeIndex < 0) {
+      log('⚠️ Erst eine Zelle aktivieren (klicken)', 'flow');
+      return;
+    }
+    const prefix = cells[activeIndex].dataset.prefix;
+    connectWithPrefix(prefix, activeIndex);
+  });
 
-// ============================================================
-// 11. INIT
-// ============================================================
-log('⚡ MXU · BOOT · ADVANCED · EXPLORER geladen', 'ok');
-log(MODULES.length + ' Module integriert', 'info');
-log('📄 BOOT.geo + realwert.md eingebunden', 'ok');
-log('⌨️  b=Boot  s=Step  r=Reset  a=Auto  space=Auto-Toggle', 'info');
+  document.getElementById('btnZurueck').addEventListener('click', () => {
+    if (activeIndex >= 0) {
+      deactivateCell(activeIndex);
+      activeIndex = -1;
+    }
+    clearConnections();
+    log('↩️ Alle Verbindungen zurückgesetzt', 'flow');
+    updateStats();
+  });
 
-renderGeoValues();
-bindRealInput();
-renderFarbe16();
-updateModuleCount();
-updateProgress();
-statusValue.textContent = 'BEREIT';
-modeValue.textContent = 'IDLE';
+  document.getElementById('btnDs9').addEventListener('click', () => {
+    ds9Mode = !ds9Mode;
+    document.getElementById('btnDs9').style.borderColor = ds9Mode ? '#f0d080' : '';
+    log(ds9Mode ? '★ DS9 aktiv – goldene Verbindungen' : '★ DS9 inaktiv', 'ds9');
+    if (ds9Mode) {
+      connectedIndices.forEach(idx => {
+        cells[idx].style.boxShadow = '0 0 30px rgba(255,215,0,0.6)';
+      });
+    } else {
+      connectedIndices.forEach(idx => {
+        cells[idx].style.boxShadow = '';
+      });
+    }
+  });
 
-console.log('⚡ MXU · BOOT · ADVANCED · EXPLORER');
-console.log(MODULES.length + ' Module integriert');
-console.log('⌨️  b=Boot  s=Step  r=Reset  a=Auto  space=Toggle');
+  document.getElementById('btnReset').addEventListener('click', () => {
+    if (activeIndex >= 0) deactivateCell(activeIndex);
+    activeIndex = -1;
+    clearConnections();
+    comboCount = 0;
+    cells.forEach(c => {
+      c.style.transform = '';
+      c.style.boxShadow = '';
+      c.classList.remove('active', 'connected', 'wave');
+    });
+    log('⟲ RESET · Schaltung neu formatiert', 'flow');
+    updateStats();
+  });
 
-// Auto-Boot nach 1 Sekunde
-setTimeout(function() {
-    log('🔄 Auto-Boot aktiv — starte...', 'warn');
-    boot();
-}, 1000);
+  // ─── TASTATUR ──────────────────────────────────────────────────
+  document.addEventListener('keydown', (e) => {
+    if (e.key === ' ') { e.preventDefault(); document.getElementById('btnVerbinden').click(); }
+    if (e.key === 'r' || e.key === 'R') document.getElementById('btnZurueck').click();
+    if (e.key === 'd' || e.key === 'D') document.getElementById('btnDs9').click();
+    if (e.key === 'x' || e.key === 'X') document.getElementById('btnReset').click();
+  });
+
+  // ─── STATS ────────────────────────────────────────────────────
+  function updateStats() {
+    document.getElementById('fileCount').textContent = fileList.length;
+    document.getElementById('activeCount').textContent = activeIndex >= 0 ? 1 : 0;
+    document.getElementById('connectedCount').textContent = connectedIndices.length;
+    const comboText = comboCount > 0 ? `ZAHNRAD ${comboCount}` : 'ZAHNRAD';
+    document.getElementById('comboDisplay').textContent = comboText;
+  }
+
+  // ─── TON (simuliert) ──────────────────────────────────────────
+  let audioCtx = null;
+  function playTone(freq = 440, dur = 0.12) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.value = freq + (Math.random() * 30 - 15);
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    } catch (_) { /* still */ }
+  }
+
+  // ─── LOG ──────────────────────────────────────────────────────
+  function log(msg, type = 'ok') {
+    const el = document.getElementById('log');
+    const time = new Date().toLocaleTimeString();
+    const cls = ['ok','flow','whirl','ds9','achse','6d','connect'].includes(type) ? type : 'ok';
+    el.innerHTML += `<div>[${time}] <span class="${cls}">${msg}</span></div>`;
+    el.scrollTop = el.scrollHeight;
+    if (el.children.length > 25) el.removeChild(el.firstChild);
+  }
+
+  // ─── INIT ─────────────────────────────────────────────────────
+  log('⚙️ Respo‑Schaltung gestartet · ' + fileList.length + ' Dateien geladen', 'ds9');
+  log('⌨️  space=Verbinden  r=Zurück  d=DS9  x=Reset', 'flow');
+  updateStats();
+
+  // Automatischer Leuchteffekt (dezent)
+  setInterval(() => {
+    if (!ds9Mode && activeIndex < 0) {
+      const idx = Math.floor(Math.random() * TOTAL);
+      const cell = cells[idx];
+      cell.style.transform = 'scale(1.04)';
+      cell.style.background = 'rgba(160,200,240,0.05)';
+      setTimeout(() => {
+        cell.style.transform = 'scale(1)';
+        cell.style.background = '';
+      }, 300);
+    }
+  }, 800);
 </script>
-
 </body>
 </html>
